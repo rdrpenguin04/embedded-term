@@ -79,7 +79,13 @@ impl<T: TextBuffer> Console<T> {
     /// Write a single `byte` to console
     pub fn write_byte(&mut self, byte: u8) {
         self.parser
-            .advance(&mut Performer::new(&mut self.inner), byte);
+            .advance(&mut Performer::new(&mut self.inner), &[byte]);
+    }
+
+    /// Write several `byte`s to console
+    pub fn write_bytes(&mut self, bytes: &[u8]) {
+        self.parser
+            .advance(&mut Performer::new(&mut self.inner), bytes);
     }
 
     /// Read result for some commands

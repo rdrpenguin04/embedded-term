@@ -8,7 +8,9 @@ use embedded_graphics_simulator::{
 };
 use embedded_term::Console;
 use libc::{self, winsize};
-use mio::{unix::EventedFd, Events, Poll, PollOpt, Ready, Token};
+use mio::unix::SourceFd;
+// use mio::{unix::EventedFd, Events, Poll, PollOpt, Ready, Token};
+use mio::{Events, Interest, Poll, Token};
 use pty::fork::Fork;
 use termios::{cfmakeraw, tcsetattr, Termios, TCSANOW};
 
@@ -23,12 +25,11 @@ fn main() {
         let display = RefCell::new(display);
 
         let mut console = Console::on_frame_buffer(DisplayWrapper(&display));
-        let poll = Poll::new().unwrap();
-        poll.register(
-            &EventedFd(&master.as_raw_fd()),
+        let mut poll = Poll::new().unwrap();
+        poll.registry().register(
+            &mut SourceFd(&master.as_raw_fd()),
             Token(0),
-            Ready::readable(),
-            PollOpt::edge(),
+            Interest::READABLE,
         )
         .unwrap();
 
@@ -53,11 +54,10 @@ fn main() {
         }
 
         let mut stdin = unsafe { File::from_raw_fd(fd) };
-        poll.register(
-            &EventedFd(&fd),
+        poll.registry().register(
+            &mut SourceFd(&fd),
             Token(1),
-            Ready::readable(),
-            PollOpt::edge(),
+            Interest::READABLE,
         )
         .unwrap();
         let mut events = Events::with_capacity(1024);
