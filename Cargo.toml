@@ -1,6 +1,6 @@
 [package]
 name = "embedded-term"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     "Runji Wang <wangrunji0408@163.com>",
     "Yuekai Jia <equation618@gmail.com>",
@@ -18,7 +18,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 embedded-graphics = "0.8"
-vte = "0.15"
+vte = { version = "0.15", default-features = false }
 log = { version = "0.4", default-features = false, optional = true }
 bitflags = "2.9"
 lazy_static = { version = "1.5", features = ["spin_no_std"] }
